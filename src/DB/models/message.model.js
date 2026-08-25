@@ -11,12 +11,13 @@ const messageSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        recieverId: {
+        receieverId: {
             type: mongoose.Types.ObjectId,
             ref: "user"
         },
         isRead: {
-            type: Boolean
+            type: Boolean,
+            default: false
         }
     },
     {
