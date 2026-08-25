@@ -1,10 +1,15 @@
 import express from "express"
+import { connection } from "./DB/connectionDB.js"
+import userRouter from "./modules/user/user.controller.js"
 const app = express()
 const port = 5000
 
 export const bootstrap = async () => {
     app.use(express.json())
 
+    await connection()
+
+    app.use("/users", userRouter)
     app.get("/", (req,res,next) => {
         return res.status(200).json({message:"Welcome home!"})
     })
