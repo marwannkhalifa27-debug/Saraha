@@ -3,6 +3,6 @@ import { createUser } from "./user.service.js";
 
 const userRouter = Router()
 
-userRouter.post("/createUser", createUser)
+userRouter.post("/", createUser)
 
 export default userRouter

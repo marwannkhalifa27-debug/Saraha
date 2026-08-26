@@ -9,9 +9,11 @@ const messageSchema = new mongoose.Schema(
         },
         content: { 
             type: String,
-            required: true
+            required: true,
+            minLength:1,
+            maxLength:500
         },
-        receieverId: {
+        receiverId: {
             type: mongoose.Types.ObjectId,
             ref: "user"
         },

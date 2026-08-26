@@ -1,0 +1,33 @@
+import { refreshTokenModel } from "../../DB/models/token.model.js"
+import { userModel } from "../../DB/models/user.model.js"
+import { generateAccessToken, generateRefreshToken } from "../../utils/auth.utils.js"
+import { findUserByEmail , createUser } from "../user/user.service.js"
+import bcrypt from "bcrypt"
+import crypto from "crypto"
+
+const hashToken = (token) => {
+    crypto.createHash("Sha256").update(token).digest("hex")
+}
+
+export const register = async({ email , password , fullName , username , age , phone , sex , role }) => {
+    const exists = await findUserByEmail(email)
+    if(exists){
+        throw new Error("This email is already registered")
+    }
+
+    const hashPassword = bcrypt.hash(password, 10)
+    const user = createUser({ email , password:hashPassword , fullName , username , age , phone , sex , role })
+
+    const accessToken = generateAccessToken(user)
+    const refreshToken = generateRefreshToken(user)
+
+
+    
+    await refreshTokenModel.create({
+        userId: user._id,
+        tokenHash:hashToken(refreshToken),
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    })
+
+    return { accessToken , refreshToken }
+}
