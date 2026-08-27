@@ -9,14 +9,14 @@ const hashToken = (token) => {
     return crypto.createHash("sha256").update(token).digest("hex")
 }
 
-export const register = async({ email , password , fullName , username , age , phone , sex , role }) => {
+export const register = async({ email , password , fullName , username , age , phone , sex  }) => {
     const exists = await findUserByEmail(email)
     if(exists){
         throw new Error("This email is already registered")
     }
 
     const hashPassword = await bcrypt.hash(password, 10)
-    const user = await createUser({ email , password:hashPassword , fullName , username , age , phone , sex , role })
+    const user = await createUser({ email , password:hashPassword , fullName , username , age , phone , sex , role: "user" })
 
     const accessToken = generateAccessToken(user)
     const refreshToken = generateRefreshToken(user)
