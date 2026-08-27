@@ -31,3 +31,27 @@ export const register = async({ email , password , fullName , username , age , p
 
     return { accessToken , refreshToken }
 }
+
+export const login = async({ email , password }) => {
+    const { email , password } = req.body
+    const found = findUserByEmail(email)
+    if(!found){
+        throw new Error ("Invalid email or password")
+    }
+
+    const match = bcrypt.compare(password, user.password)
+    if(!match){
+        throw new Error ("Invalid email or password")
+    }
+
+    const accessToken = generateAccessToken(user)
+    const refreshToken = generateRefreshToken(user)
+
+    refreshTokenModel({
+        userId: user._id,
+        tokenHash: hashToken(refreshToken),
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 *60 * 1000)
+    })
+
+    return { accessToken , refreshToken}
+}
