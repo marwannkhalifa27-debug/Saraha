@@ -25,4 +25,3 @@ export const verifyRefreshToken = (token) => {
     return jwt.verify(token, process.env.refresh_token_secret)
 }
 
-console.log(process.env.refresh_token_secret)
