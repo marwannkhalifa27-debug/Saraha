@@ -33,8 +33,7 @@ export const register = async({ email , password , fullName , username , age , p
 }
 
 export const login = async({ email , password }) => {
-    const { email , password } = req.body
-    const user = findUserByEmail(email)
+    const user = await findUserByEmail(email)
     if(!user){
         throw new Error ("Invalid email or password")
     }
