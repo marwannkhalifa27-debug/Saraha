@@ -6,7 +6,7 @@ import bcrypt from "bcrypt"
 import crypto from "crypto"
 
 const hashToken = (token) => {
-    crypto.createHash("Sha256").update(token).digest("hex")
+    return crypto.createHash("sha256").update(token).digest("hex")
 }
 
 export const register = async({ email , password , fullName , username , age , phone , sex , role }) => {
@@ -15,8 +15,8 @@ export const register = async({ email , password , fullName , username , age , p
         throw new Error("This email is already registered")
     }
 
-    const hashPassword = bcrypt.hash(password, 10)
-    const user = createUser({ email , password:hashPassword , fullName , username , age , phone , sex , role })
+    const hashPassword = await bcrypt.hash(password, 10)
+    const user = await createUser({ email , password:hashPassword , fullName , username , age , phone , sex , role })
 
     const accessToken = generateAccessToken(user)
     const refreshToken = generateRefreshToken(user)
@@ -34,12 +34,12 @@ export const register = async({ email , password , fullName , username , age , p
 
 export const login = async({ email , password }) => {
     const { email , password } = req.body
-    const found = findUserByEmail(email)
-    if(!found){
+    const user = findUserByEmail(email)
+    if(!user){
         throw new Error ("Invalid email or password")
     }
 
-    const match = bcrypt.compare(password, user.password)
+    const match = await bcrypt.compare(password, user.password)
     if(!match){
         throw new Error ("Invalid email or password")
     }
@@ -47,7 +47,7 @@ export const login = async({ email , password }) => {
     const accessToken = generateAccessToken(user)
     const refreshToken = generateRefreshToken(user)
 
-    refreshTokenModel({
+    await refreshTokenModel.create({
         userId: user._id,
         tokenHash: hashToken(refreshToken),
         expiresAt: new Date(Date.now() + 7 * 24 * 60 *60 * 1000)
