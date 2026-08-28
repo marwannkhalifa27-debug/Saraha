@@ -54,3 +54,12 @@ export const login = async({ email , password }) => {
 
     return { accessToken , refreshToken}
 }
+
+export const logout = async(req,res,next) => {
+    try {
+        await refreshTokenModel.deleteOne(token)
+        return res.status(200).json({message:"Token has been deleted"})
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+}

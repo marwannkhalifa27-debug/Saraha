@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { login, register } from "./auth.service.js";
+import { login, logout, register } from "./auth.service.js";
+import { authenticate } from "../../middleware/auth.middleware.js";
 
 
 const authRouter = Router()
@@ -20,5 +21,7 @@ authRouter.post("/login", async (req, res, next) => {
         return res.status(400).json({message:error.message})
     }
 })
+
+authRouter.delete("/logout", authenticate, logout)
 
 export default authRouter
