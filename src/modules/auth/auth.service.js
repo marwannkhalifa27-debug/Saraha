@@ -1,3 +1,4 @@
+import { access } from "fs"
 import { refreshTokenModel } from "../../DB/models/token.model.js"
 import { userModel } from "../../DB/models/user.model.js"
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../utils/auth.utils.js"
@@ -56,9 +57,26 @@ export const login = async({ email , password }) => {
 }
 
 export const refresh = async(refreshToken) => {
-    if(refreshToken){
-        await verifyRefreshToken(refreshToken)
+    if(!refreshToken){
+        throw new Error("No refresh token provided")
     }
+
+    const decoded = verifyRefreshToken(refreshToken)
+
+    const stored = refreshTokenModel.findOne({
+        userId: decoded.userId,
+        tokenHash: hashToken(refreshToken),
+        expiresAt: { $gt: new Date()}
+    })
+
+    if(!stored){
+        throw new Error("Invalid token or expired")
+    }
+
+    const user = await userModel.findById(decoded.userId)
+    const accessToken = generateAccessToken(user)
+
+    return { accessToken }
 }
 
 export const logout = async(refreshToken) => {

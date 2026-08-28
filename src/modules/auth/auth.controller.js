@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { login, logout, refresh, register } from "./auth.service.js";
 import { authenticate } from "../../middleware/auth.middleware.js";
+import { validate } from "../../middleware/validation.middleware.js";
 
 
 const authRouter = Router()
 
-authRouter.post("/register", async (req,res,next) => {
+authRouter.post("/register", validate(registerSchema),async (req,res,next) => {
     try {
         const result = await register(req.body)
         return res.status(201).json(result)
@@ -21,12 +22,12 @@ authRouter.post("/login", async (req, res, next) => {
         return res.status(400).json({message:error.message})
     }
 })
-authRouter.post("/refresh", authenticate, async(req,res,next) => {
+authRouter.post("/refresh", async(req,res,next) => {
     try {
         await refresh(req.body.refreshToken)
         return res.status(200).json({message:"Refreshed token"})
     } catch (error) {
-        return res.status(500).json({message:error.message})
+        return res.status(401).json({message:error.message})
     }
 })
 
