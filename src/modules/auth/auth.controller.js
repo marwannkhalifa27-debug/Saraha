@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, logout, register } from "./auth.service.js";
+import { login, logout, refresh, register } from "./auth.service.js";
 import { authenticate } from "../../middleware/auth.middleware.js";
 
 
@@ -21,7 +21,22 @@ authRouter.post("/login", async (req, res, next) => {
         return res.status(400).json({message:error.message})
     }
 })
+authRouter.post("/refresh", authenticate, async(req,res,next) => {
+    try {
+        await refresh(req.body.refreshToken)
+        return res.status(200).json({message:"Refreshed token"})
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+})
 
-authRouter.delete("/logout", authenticate, logout)
+authRouter.delete("/logout", authenticate, async (req,res,next) => {
+    try {
+        await logout(req.body.refreshToken)
+        return res.status(200).json({message:"Logged out succussfully."})
+    } catch (error) {
+        return res.status(500).json({message:error.message})
+    }
+})
 
 export default authRouter

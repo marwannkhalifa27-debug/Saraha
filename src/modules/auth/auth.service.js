@@ -1,6 +1,6 @@
 import { refreshTokenModel } from "../../DB/models/token.model.js"
 import { userModel } from "../../DB/models/user.model.js"
-import { generateAccessToken, generateRefreshToken } from "../../utils/auth.utils.js"
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../utils/auth.utils.js"
 import { findUserByEmail , createUser } from "../user/user.service.js"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
@@ -55,11 +55,14 @@ export const login = async({ email , password }) => {
     return { accessToken , refreshToken}
 }
 
-export const logout = async(req,res,next) => {
-    try {
-        await refreshTokenModel.deleteOne(token)
-        return res.status(200).json({message:"Token has been deleted"})
-    } catch (error) {
-        return res.status(500).json({message:error.message})
+export const refresh = async(refreshToken) => {
+    if(refreshToken){
+        await verifyRefreshToken(refreshToken)
+    }
+}
+
+export const logout = async(refreshToken) => {
+    if(refreshToken){
+        await refreshTokenModel.deleteOne({tokenHash: hashToken(refreshToken)})
     }
 }
