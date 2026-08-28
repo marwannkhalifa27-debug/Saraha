@@ -2,6 +2,7 @@ import express from "express"
 import { connection } from "./DB/connectionDB.js"
 import userRouter from "./modules/user/user.controller.js"
 import authRouter from "./modules/auth/auth.controller.js"
+import messageRouter from "./modules/message/message.controller.js"
 const app = express()
 const port = 5000
 
@@ -10,8 +11,10 @@ export const bootstrap = async () => {
 
     await connection()
 
-    app.use("/users", userRouter)
     app.use("/auth", authRouter)
+    app.use("/users", userRouter)
+    app.use("/message", messageRouter)
+    
     app.get("/", (req,res,next) => {
         return res.status(200).json({message:"Welcome home!"})
     })
