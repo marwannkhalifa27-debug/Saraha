@@ -2,6 +2,7 @@ import { Router } from "express";
 import { login, logout, refresh, register } from "./auth.service.js";
 import { authenticate } from "../../middleware/auth.middleware.js";
 import { validate } from "../../middleware/validation.middleware.js";
+import { registerSchema , loginSchema } from "../../modules/auth/auth.validation.js"
 
 
 const authRouter = Router()
@@ -14,7 +15,7 @@ authRouter.post("/register", validate(registerSchema),async (req,res,next) => {
         return res.status(400).json({message:error.message})
     }
 })
-authRouter.post("/login", async (req, res, next) => {
+authRouter.post("/login", validate(loginSchema) ,async (req, res, next) => {
     try {
         const result = await login(req.body)
         return res.status(200).json(result)

@@ -11,3 +11,11 @@ const registerSchema = z.object(
         phone:z.string()
     }
 )
+
+const loginSchema = z.object(
+    {
+        email:z.email(),
+        password:z.string().min(8, "Password must at least be 8 characters")
+    }
+)
+
