@@ -7,5 +7,5 @@ const userRouter = Router()
 
 userRouter.post("/", createUser)
 userRouter.get("/me", authenticate, getUser)
-userRouter.post("/avatar", upload.single('avatar'), testUpload)
+userRouter.post("/avatar",authenticate ,upload.single('avatar'), testUpload)
 export default userRouter
