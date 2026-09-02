@@ -13,5 +13,5 @@ export const getUser = async(req,res,next) => {
 }
 
 export const testUpload = async(req,res,next) => {
-    const file = upload.single('avatar')
+    return res.status(200).json({ file: req.file })
 }
