@@ -1,6 +1,6 @@
 import { access } from "fs"
-import { refreshTokenModel } from "../../DB/models/token.model.js"
-import { userModel } from "../../DB/models/user.model.js"
+import { refreshTokenModel } from "../../config/DB/models/token.model.js"
+import { userModel } from "../../config/DB/models/user.model.js"
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../utils/auth.utils.js"
 import { findUserByEmail , createUser } from "../user/user.service.js"
 import bcrypt from "bcrypt"

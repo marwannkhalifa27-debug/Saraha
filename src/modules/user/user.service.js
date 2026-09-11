@@ -1,4 +1,4 @@
-import { userModel } from "../../DB/models/user.model.js"
+import { userModel } from "../../config/DB/models/user.model.js"
 import bcrypt from "bcrypt"
 import { upload } from "../../middleware/upload.middleware.js"
 

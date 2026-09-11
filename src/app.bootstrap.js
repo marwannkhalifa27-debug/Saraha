@@ -1,5 +1,5 @@
 import express from "express"
-import { connection } from "./DB/connectionDB.js"
+import { connection } from "./config/DB/connectionDB.js"
 import userRouter from "./modules/user/user.controller.js"
 import authRouter from "./modules/auth/auth.controller.js"
 import messageRouter from "./modules/message/message.controller.js"

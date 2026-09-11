@@ -1,12 +1,11 @@
-import { messageModel } from "../../DB/models/message.model.js"
-import { userModel } from "../../DB/models/user.model.js"
+import { messageModel } from "../../config/DB/models/message.model.js"
+import { userModel } from "../../config/DB/models/user.model.js"
 
 
-export const findUserByEmail = async (username) => await userModel.findOne({ username })
+export const findUserByUsername = async (username) => await userModel.findOne({ username })
 
 export const sendMessages = async (username, { title , content }) => {
-    try {
-    const receiver = await findUserByEmail(username)
+    const receiver = await findUserByUsername(username)
     if(!receiver){
         throw new Error("User not found")
     }
@@ -17,10 +16,6 @@ export const sendMessages = async (username, { title , content }) => {
         receiverId:receiver._id
     })
     return message
-    } 
-    catch (error) {
-        throw new Error(error.message)
-    }
 }
 
 export const getMessages = async (req,res,next) => {
