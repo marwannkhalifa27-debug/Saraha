@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema(
             type: Number,
             required: true
         },
+        phone:{
+            type: Number,
+            required: true
+        },
         sex: {
             type: String,
             enum: ["male", "female"],

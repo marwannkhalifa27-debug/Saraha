@@ -1,4 +1,3 @@
-import { access } from "fs"
 import { refreshTokenModel } from "../../config/DB/models/token.model.js"
 import { userModel } from "../../config/DB/models/user.model.js"
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../../utils/auth.utils.js"
@@ -63,7 +62,7 @@ export const refresh = async(refreshToken) => {
 
     const decoded = verifyRefreshToken(refreshToken)
 
-    const stored = refreshTokenModel.findOne({
+    const stored = await refreshTokenModel.findOne({
         userId: decoded.userId,
         tokenHash: hashToken(refreshToken),
         expiresAt: { $gt: new Date()}

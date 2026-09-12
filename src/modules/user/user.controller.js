@@ -5,7 +5,6 @@ import { upload } from "../../middleware/upload.middleware.js";
 
 const userRouter = Router()
 
-userRouter.post("/", createUser)
 userRouter.get("/me", authenticate, getUser)
 userRouter.post("/avatar",authenticate ,upload.single('avatar'), testUpload)
 export default userRouter

@@ -25,8 +25,8 @@ authRouter.post("/login", validate(loginSchema) ,async (req, res, next) => {
 })
 authRouter.post("/refresh", async(req,res,next) => {
     try {
-        await refresh(req.body.refreshToken)
-        return res.status(200).json({message:"Refreshed token"})
+        const result = await refresh(req.body.refreshToken)
+        return res.status(200).json(result)
     } catch (error) {
         return res.status(401).json({message:error.message})
     }

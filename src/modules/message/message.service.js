@@ -9,7 +9,7 @@ export const sendMessages = async (username, { title , content }) => {
     if(!receiver){
         const err = new Error("User not found")
         err.status = 404
-        return err
+        throw err
     }
 
     const message = await messageModel.create({
