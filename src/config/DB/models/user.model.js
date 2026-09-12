@@ -38,8 +38,7 @@ const userSchema = new mongoose.Schema(
             default: "user"
         },
         avatarUrl: {
-            type: String,
-            optional: true
+            type: String
         }
     },
     {

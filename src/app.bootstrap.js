@@ -3,11 +3,13 @@ import { connection } from "./config/DB/connectionDB.js"
 import userRouter from "./modules/user/user.controller.js"
 import authRouter from "./modules/auth/auth.controller.js"
 import messageRouter from "./modules/message/message.controller.js"
+import { loggerMiddleware } from "./middleware/logger.middleware.js"
 const app = express()
 const port = 5000
 
 export const bootstrap = async () => {
     app.use(express.json())
+    app.use(loggerMiddleware)
 
     await connection()
 
