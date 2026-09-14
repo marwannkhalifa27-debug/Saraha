@@ -11,10 +11,10 @@ import { sendMail } from "../../utils/mail.utils.js"
 const OTP_TTL = 300
 
 export const sendOTP = async (email) => {
-    const user = findUserByEmail(email)
+    const user = await findUserByEmail(email)
     if(!user){
         const err = new Error("No account found with this email!")
-        err.status(404)
+        err.status = 404
         throw err
     }
     const otp = generateOTP()

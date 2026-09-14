@@ -12,7 +12,7 @@ authRouter.post("/send-otp", async (req,res) => {
         await sendOTP(req.body.email)
         return res.status(200).json({ message: "OTP sent" });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        return res.status(error.status || 500).json({ message: error.message })
     }
 })
 
