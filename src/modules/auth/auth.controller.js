@@ -1,11 +1,20 @@
 import { Router } from "express";
-import { login, logout, refresh, register } from "./auth.service.js";
+import { login, logout, refresh, register, sendOTP } from "./auth.service.js";
 import { authenticate } from "../../middleware/auth.middleware.js";
 import { validate } from "../../middleware/validation.middleware.js";
 import { registerSchema , loginSchema } from "../../modules/auth/auth.validation.js"
 
 
 const authRouter = Router()
+
+authRouter.post("/send-otp", async (req,res) => {
+    try {
+        await sendOTP(req.body.email)
+        return res.status(200).json({ message: "OTP sent" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+})
 
 authRouter.post("/register", validate(registerSchema),async (req,res,next) => {
     try {

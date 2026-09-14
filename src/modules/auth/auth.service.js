@@ -4,6 +4,29 @@ import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from ".
 import { findUserByEmail , createUser } from "../user/user.service.js"
 import bcrypt from "bcrypt"
 import crypto from "crypto"
+import { generateOTP } from "../../utils/otp.utils.js"
+import { redisClient } from "../../config/redis/redisConnection.js"
+import { sendMail } from "../../utils/mail.utils.js"
+
+const OTP_TTL = 300
+
+export const sendOTP = async (email) => {
+    const user = findUserByEmail(email)
+    if(!user){
+        const err = new Error("No account found with this email!")
+        err.status(404)
+        throw err
+    }
+    const otp = generateOTP()
+
+    await redisClient.set(`otp:${email}`, otp, {ex: OTP_TTL})
+
+    await sendMail({
+        to: email,
+        subject: "Saraha verification code",
+        html:`<p>Your verification code is <b>${otp}</b>. It expires in 5 minutes.</p>`
+    })
+}
 
 const hashToken = (token) => {
     return crypto.createHash("sha256").update(token).digest("hex")
