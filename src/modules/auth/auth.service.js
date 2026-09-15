@@ -9,6 +9,7 @@ import { redisClient } from "../../config/redis/redisConnection.js"
 import { sendMail } from "../../utils/mail.utils.js"
 
 const OTP_TTL = 300
+const RESEND_COOLDOWN = 60
 
 export const sendOTP = async (email) => {
     const user = await findUserByEmail(email)
@@ -26,6 +27,35 @@ export const sendOTP = async (email) => {
         subject: "Saraha verification code",
         html:`<p>Your verification code is <b>${otp}</b>. It expires in 5 minutes.</p>`
     })
+}
+export const verifyOTP = async (email, submittedOTP) => {
+    const storedOTP = redisClient.get(`otp:${email}`)
+    if(!storedOTP){
+        const err = new Error("Invalid OTP")
+        err.status = 400
+        throw err
+    }
+    if(storedOTP !== submittedOTP){
+        const err = new Error("Incorrect OTP")
+        err.status = 400
+        throw err
+    }
+    await redisClient.del(`otp:${email}`)
+    await userModel.updateOne({ email }, { isVerified: true })
+}
+
+export const resendOTP = async (email) => {
+    const coolDownKey = `otp:cooldown:${email}`
+    const onCoolDown = await redisClient.get(coolDownKey)
+
+    if(onCoolDown){
+        const err = new Error("Please wait before requesting another code");
+        err.status = 429;
+        throw err;
+    }
+
+    await sendOTP(email)
+    await redisClient.set(coolDownKey, "1", { ex: RESEND_COOLDOWN })
 }
 
 const hashToken = (token) => {

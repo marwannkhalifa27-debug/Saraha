@@ -24,7 +24,7 @@ transporter.verify((error, success) => {
 
 export const sendMail = async ({ to , subject , html}) => {
     return transporter.sendMail({
-        from: `"Saraha" <${process.env.ethereal_mail_username}>`,
+        from: `"Saraha" <${process.env.ethereal_email_username}>`,
         to,
         subject,
         html

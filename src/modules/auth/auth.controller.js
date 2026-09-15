@@ -15,6 +15,23 @@ authRouter.post("/send-otp", async (req,res) => {
         return res.status(error.status || 500).json({ message: error.message })
     }
 })
+authRouter.post("/verify-otp", async (req, res) => {
+    try {
+        await verifyOtp(req.body.email, req.body.otp);
+        return res.status(200).json({ message: "Email verified successfully" });
+    } catch (error) {
+        return res.status(error.status || 500).json({ message: error.message });
+    }
+})
+
+authRouter.post("/resend-otp", async (req, res) => {
+    try {
+        await resendOtp(req.body.email);
+        return res.status(200).json({ message: "OTP resent" });
+    } catch (error) {
+        return res.status(error.status || 500).json({ message: error.message });
+    }
+})
 
 authRouter.post("/register", validate(registerSchema),async (req,res,next) => {
     try {
