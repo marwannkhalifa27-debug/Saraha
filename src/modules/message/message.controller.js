@@ -25,31 +25,31 @@ messageRouter.get("/", authenticate , async (req,res,next) => {
         const messages = await getMessages(receiverId, page, limit)
         return res.status(200).json(messages)
     } catch (error) {
-        return res.status(error.status || 500).json(error.message)
+        return res.status(error.status || 500).json({message: error.message})
     }
 })
 
 messageRouter.patch("/:messageId/read", authenticate, async(req,res,next) => {
     try {
         const receiverId = req.user.userId
-        const messageId = req.params._id
+        const messageId = req.params.messageId
 
         const message = await isRead(receiverId, messageId)
         return res.status(200).json(message)
     } catch (error) {
-        return res.status(error.status || 500).json(error.message)
+        return res.status(error.status || 500).json({message: error.message})
     }
 })
 
 messageRouter.delete("/:messageId", authenticate, async (req,res,next) => {
     try {
         const receiverId = req.user.userId
-        const messageId = req.params._id
+        const messageId = req.params.messageId
 
         const deletedMessage = await deleteMessage(receiverId, messageId)
         return res.status(200).json({message: "Message has been deleted", deletedMessage})
     } catch (error) {
-        return res.status(error.status || 500).json(error.message)
+        return res.status(error.status || 500).json({message: error.message})
     }
 })
 
