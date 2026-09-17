@@ -1,5 +1,4 @@
 import { messageModel } from "../../config/DB/models/message.model.js"
-import { userModel } from "../../config/DB/models/user.model.js"
 import { findUserByUsername } from "../user/user.service.js"
 
 
@@ -35,12 +34,22 @@ export const getMessages = async (receiverId, page, limit) => {
 
 export const isRead = async (receiverId, messageId) => {
     const message = await messageModel
-        .findOneAndUpdate({ receiverId, messageId }, { isRead: true})
+        .findOneAndUpdate({ _id: messageId, receiverId }, { isRead: true})
 
+    if(!message){
+        const err = "Message not found"
+        err.status = 404
+        throw err
+    }
     return message
 }
 
-export const deleteMessage = async(recieverId, messageId) => {
-    const deletedMessage = await messageModel.findOneAndDelete({ receiverId , messageId })
+export const deleteMessage = async(receiverId, _id) => {
+    const deletedMessage = await messageModel.findOneAndDelete({ _id: messageId, receiverId  })
+    if(!deletedMessage){
+        const err = "Message not found"
+        err.status = 404
+        throw err
+    }
     return deletedMessage
 }
