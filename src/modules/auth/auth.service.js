@@ -29,7 +29,7 @@ export const sendOTP = async (email) => {
     })
 }
 export const verifyOTP = async (email, submittedOTP) => {
-    const storedOTP = redisClient.get(`otp:${email}`)
+    const storedOTP = await redisClient.get(`otp:${email}`)
     if(!storedOTP){
         const err = new Error("Invalid OTP")
         err.status = 400

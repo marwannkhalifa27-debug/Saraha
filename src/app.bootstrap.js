@@ -1,14 +1,15 @@
+import "dotenv/config"
 import express from "express"
 import { connection } from "./config/DB/connectionDB.js"
 import userRouter from "./modules/user/user.controller.js"
 import authRouter from "./modules/auth/auth.controller.js"
 import messageRouter from "./modules/message/message.controller.js"
 import { loggerMiddleware } from "./middleware/logger.middleware.js"
+import cors from "cors"
 const app = express()
-const port = 5000
 
 export const bootstrap = async () => {
-    app.use(express.json())
+    app.use(express.json(), cors())
     app.use(loggerMiddleware)
 
     await connection()
@@ -24,5 +25,5 @@ export const bootstrap = async () => {
         return res.status(404).json({message:"Not found!"})
     })
 
-    app.listen(port, () => console.log(`Server is running on port ${port}`))
+    app.listen(process.env.port, () => console.log(`Server is running on port ${process.env.port}`))
 }

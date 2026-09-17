@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, logout, refresh, register, sendOTP } from "./auth.service.js";
+import { login, logout, refresh, register, resendOTP, sendOTP, verifyOTP } from "./auth.service.js";
 import { authenticate } from "../../middleware/auth.middleware.js";
 import { validate } from "../../middleware/validation.middleware.js";
 import { registerSchema , loginSchema } from "../../modules/auth/auth.validation.js"
@@ -17,7 +17,7 @@ authRouter.post("/send-otp", async (req,res) => {
 })
 authRouter.post("/verify-otp", async (req, res) => {
     try {
-        await verifyOtp(req.body.email, req.body.otp);
+        await verifyOTP(req.body.email, req.body.otp);
         return res.status(200).json({ message: "Email verified successfully" });
     } catch (error) {
         return res.status(error.status || 500).json({ message: error.message });
@@ -26,7 +26,7 @@ authRouter.post("/verify-otp", async (req, res) => {
 
 authRouter.post("/resend-otp", async (req, res) => {
     try {
-        await resendOtp(req.body.email);
+        await resendOTP(req.body.email);
         return res.status(200).json({ message: "OTP resent" });
     } catch (error) {
         return res.status(error.status || 500).json({ message: error.message });
