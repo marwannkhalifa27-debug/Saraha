@@ -20,11 +20,27 @@ export const sendMessages = async (username, { title , content }) => {
     return message
 }
 
-export const getMessages = async (req,res,next) => {
-    try {
-        const messages = await messageModel.find({ receiverId: req.user.userId })
-        return res.status(200).json(messages)
-    } catch (error) {
-        return res.status(500).json({message: error.message})
-    }
+export const getMessages = async (receiverId, page, limit) => {
+    
+    const skip = (page - 1) * limit
+
+    const messages = await messageModel
+        .find({ receiverId })
+        .sort({ createdAt: -1})
+        .skip(skip)
+        .limit(limit)
+
+    return messages
+}
+
+export const isRead = async (receiverId, messageId) => {
+    const message = await messageModel
+        .findOneAndUpdate({ receiverId, messageId }, { isRead: true})
+
+    return message
+}
+
+export const deleteMessage = async(recieverId, messageId) => {
+    const deletedMessage = await messageModel.findOneAndDelete({ receiverId , messageId })
+    return deletedMessage
 }

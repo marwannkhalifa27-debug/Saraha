@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getMessages, sendMessages } from "./message.service.js";
+import { deleteMessage, getMessages, isRead, sendMessages } from "./message.service.js";
 import { authenticate } from "../../middleware/auth.middleware.js";
 import { validate } from "../../middleware/validation.middleware.js";
 import { messageSchema } from "./message.validation.js";
@@ -15,6 +15,42 @@ messageRouter.post("/:username", rateLimitMessages(5, 60), validate(messageSchem
         return res.status(error.status || 500).json({ message: error.message })
     }
 })
-messageRouter.get("/", authenticate ,getMessages)
+messageRouter.get("/", authenticate , async (req,res,next) => {
+    try {
+        const receiverId = req.user.userId
+
+        const page = Number(req.query.page)
+        const limit = Number(req.query.limit)
+
+        const messages = await getMessages(receiverId, page, limit)
+        return res.status(200).json(messages)
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
+
+messageRouter.patch("/:messageId/read", authenticate, async(req,res,next) => {
+    try {
+        const receiverId = req.user.userId
+        const messageId = req.params.messageId
+
+        const message = await isRead(receiverId)
+        return res.status(200).json(message)
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
+
+messageRouter.delete("/:messageId", authenticate, async (req,res,next) => {
+    try {
+        const receiverId = req.user.userId
+        const messageId = req.params.messageId
+
+        const deletedMessage = await deleteMessage(receiverId, messageId)
+        return res.status(200).json({message: "Message has been deleted", deletedMessage})
+    } catch (error) {
+        return res.status(500).json(error.message)
+    }
+})
 
 export default messageRouter

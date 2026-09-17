@@ -7,6 +7,7 @@ export const createUser = async(userData) => userModel.create(userData)
 export const findUserByEmail = async (email) => userModel.findOne({email})
 export const findUserByUsername = async (username) => {
     const cacheKey = `user:username:${username}`
+    
     const cached = await redisClient.get(cacheKey)
     if(cached){
         return cached
