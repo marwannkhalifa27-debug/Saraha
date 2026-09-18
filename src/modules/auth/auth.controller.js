@@ -53,7 +53,7 @@ authRouter.post("/refresh", async(req,res,next) => {
 authRouter.delete("/logout", authenticate, async (req,res,next) => {
     try {
         await logout(req.body.refreshToken)
-        return res.status(200).json({message:"Logged out succussfully."})
+        return res.status(200).json({message:"Logged out successfully."})
     } catch (error) {
         return res.status(500).json({message:error.message})
     }

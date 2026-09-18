@@ -49,7 +49,7 @@ export const updateAvatar = async (req,res,next) => {
 export const updateProfile = async (req,res,next) => {
     try {
         const userId = req.user.userId
-        const { fullName, username, email, password, sex, age, phone} = req.body
+        const { fullName, sex, age, phone} = req.body
         const data = await userModel
             .findByIdAndUpdate(userId, {
                 fullName,
