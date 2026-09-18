@@ -81,7 +81,7 @@ export const register = async({ email , password , fullName , username , age , p
         tokenHash:hashToken(refreshToken),
         expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     })
-    await sendOTP(email)
+    await sendOTP(email).catch(() => {})
     return { accessToken , refreshToken }
 }
 

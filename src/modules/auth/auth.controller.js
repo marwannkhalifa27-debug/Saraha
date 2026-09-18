@@ -7,14 +7,6 @@ import { registerSchema , loginSchema } from "../../modules/auth/auth.validation
 
 const authRouter = Router()
 
-authRouter.post("/send-otp", async (req,res) => {
-    try {
-        await sendOTP(req.body.email)
-        return res.status(200).json({ message: "OTP sent" });
-    } catch (error) {
-        return res.status(error.status || 500).json({ message: error.message })
-    }
-})
 authRouter.post("/verify-otp", async (req, res) => {
     try {
         await verifyOTP(req.body.email, req.body.otp);
