@@ -34,7 +34,7 @@ export const getMessages = async (receiverId, page, limit) => {
 
 export const isRead = async (receiverId, messageId) => {
     const message = await messageModel
-        .findOneAndUpdate({ messageId: _id, receiverId }, { isRead: true})
+        .findOneAndUpdate({ _id: messageId, receiverId }, { isRead: true} , {new: true})
 
     if(!message){
         const err = new Error("Message not found")
@@ -44,8 +44,8 @@ export const isRead = async (receiverId, messageId) => {
     return message
 }
 
-export const deleteMessage = async(receiverId, _id) => {
-    const deletedMessage = await messageModel.findOneAndDelete({ messageId: _id, receiverId  })
+export const deleteMessage = async(receiverId, messageId) => {
+    const deletedMessage = await messageModel.findOneAndDelete({ _id: messageId, receiverId  })
     if(!deletedMessage){
         const err = new Error("Message not found")
         err.status = 404
