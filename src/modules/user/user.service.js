@@ -32,24 +32,33 @@ export const testUpload = async(req,res,next) => {
 }
 
 export const updateProfile = async (req,res,next) => {
-    const userId = req.user.userId
-    const data = await userModel
-        .findByIdAndUpdate(userId, {
-            fullName,
-            username,
-            email,
-            password,
-            sex,
-            age,
-            phone
-        }, {new: true})
+    try {
+        const userId = req.user.userId
+        const { fullName, username, email, password, sex, age, phone} = req.body
+        const data = await userModel
+            .findByIdAndUpdate(userId, {
+                fullName,
+                sex,
+                age,
+                phone
+            }, {new: true})
+            .select("-password")
 
         return res.status(200).json(data)
+    } catch (error) {
+        return res.status(error.status || 500).json(error.message)
+    }
+    
 }
 
 export const deleteProfile = async (req,res,next) => {
-    const userId = req.user.userId
-    const deleted = await userModel.findOneAndDelete(userId, { new: true})
+    try {
+        const userId = req.user.userId
+        const deleted = await userModel.findOneAndDelete(userId)
 
-    return res.status(200).json({message: "Profile has been deleted", deleted})
+        return res.status(200).json({message: "Profile has been deleted", deleted})
+    }
+    catch (error) {
+        return res.status(error.status || 500).json(error.message)
+    }
 }
