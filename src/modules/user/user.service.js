@@ -27,8 +27,23 @@ export const getUser = async(req,res,next) => {
     return res.status(200).json(result)
 }
 
-export const testUpload = async(req,res,next) => {
-    return res.status(200).json({ file: req.file })
+export const updateAvatar = async (req,res,next) => {
+    try {
+        if(!req.file){
+            const err = new Error("No file provided")
+            err.status = 404
+            throw err
+        }
+        const userId = req.user.userId
+        const user = await userModel
+            .findByIdAndUpdate(userId, { avatarUrl: req.file.path}, {new: true})
+            .select("-password")
+        
+        return res.status(200).json(user)
+
+    } catch (error) {
+        return res.status(error.status || 500).json({message: error.message})
+    }
 }
 
 export const updateProfile = async (req,res,next) => {
@@ -46,7 +61,7 @@ export const updateProfile = async (req,res,next) => {
 
         return res.status(200).json(data)
     } catch (error) {
-        return res.status(error.status || 500).json(error.message)
+        return res.status(error.status || 500).json({message: error.message})
     }
     
 }
@@ -54,11 +69,11 @@ export const updateProfile = async (req,res,next) => {
 export const deleteProfile = async (req,res,next) => {
     try {
         const userId = req.user.userId
-        const deleted = await userModel.findOneAndDelete(userId)
+        const deleted = await userModel.findByIdAndDelete(userId)
 
         return res.status(200).json({message: "Profile has been deleted", deleted})
     }
     catch (error) {
-        return res.status(error.status || 500).json(error.message)
+        return res.status(error.status || 500).json({message: error.message})
     }
 }
